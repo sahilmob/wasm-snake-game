@@ -5,18 +5,18 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 pub struct World {
-    width: usize,
+    size: usize,
 }
 
 #[wasm_bindgen]
 impl World {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        Self { width: 8 }
+        Self { size: 16 }
     }
 
     #[wasm_bindgen(getter)]
-    pub fn width(&self) -> usize {
-        self.width
+    pub fn size(&self) -> usize {
+        self.size
     }
 }
