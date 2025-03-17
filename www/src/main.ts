@@ -28,4 +28,6 @@ function drawWorld() {
   ctx?.stroke();
 }
 
+console.log(world.snakeHeadIdx);
+
 drawWorld();
