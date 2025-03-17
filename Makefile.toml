@@ -1,0 +1,16 @@
+
+
+[tasks.build-wasm]
+script = '''
+watchexec -w src -- wasm-pack build --target web
+'''
+
+
+[tasks.start-vite]
+script = '''
+cd www && npm run dev
+'''
+
+
+[tasks.dev]
+run_task = { name = ["start-vite", "build-wasm"], parallel = true }
