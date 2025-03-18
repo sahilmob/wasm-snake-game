@@ -7,7 +7,7 @@ const CELL_SIZE = 10;
 const WORLD_SIZE = 8;
 const snakeSpawnIdx = Date.now() % WORLD_SIZE ** 2;
 
-await init();
+const wasm = await init();
 const world = new World(WORLD_SIZE, snakeSpawnIdx);
 const canvas = <HTMLCanvasElement>document.getElementById("canvas");
 canvas.height = WORLD_SIZE * CELL_SIZE;
@@ -31,20 +31,32 @@ function drawWorld() {
 }
 
 function drawSnake() {
-  const snakeIdx = world.snakeHeadIdx;
-  const col = snakeIdx % WORLD_SIZE;
-  const row = Math.floor(snakeIdx / WORLD_SIZE);
+  const snakeCellPtr = world.snakeCellsPtr;
+  const snakeLength = world.snakeLength;
+  const snakeCells = new Uint32Array(
+    wasm.memory.buffer,
+    snakeCellPtr,
+    snakeLength
+  );
 
-  ctx?.beginPath();
+  for (const i in snakeCells) {
+    const idx = snakeCells[i];
+    const col = idx % WORLD_SIZE;
+    const row = Math.floor(idx / WORLD_SIZE);
 
-  ctx?.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    ctx!.fillStyle = +i === 0 ? "#7878db" : "#000000";
+
+    ctx?.beginPath();
+
+    ctx?.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+  }
 
   ctx?.stroke();
 }
 
 function drawGame() {
   ctx?.clearRect(0, 0, canvas.width, canvas.height);
-  world.update();
+  world.step();
   drawWorld();
   drawSnake();
 }
