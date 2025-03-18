@@ -5,10 +5,10 @@ import "./style.css";
 const FPS = 10;
 const CELL_SIZE = 10;
 const WORLD_SIZE = 8;
-const SNAKE_SPAWN_IDX = Date.now() % WORLD_SIZE ** 2;
+const snakeSpawnIdx = Date.now() % WORLD_SIZE ** 2;
 
 await init();
-const world = new World(WORLD_SIZE, SNAKE_SPAWN_IDX);
+const world = new World(WORLD_SIZE, snakeSpawnIdx);
 const canvas = <HTMLCanvasElement>document.getElementById("canvas");
 canvas.height = WORLD_SIZE * CELL_SIZE;
 canvas.height = WORLD_SIZE * CELL_SIZE;
