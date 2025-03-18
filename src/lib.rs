@@ -26,10 +26,10 @@ impl Snake {
 #[wasm_bindgen]
 impl World {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Self {
+    pub fn new(size: usize, snake_spawn_idx: usize) -> Self {
         Self {
-            size: 8,
-            snake: Snake::new(10),
+            size,
+            snake: Snake::new(snake_spawn_idx),
         }
     }
 
