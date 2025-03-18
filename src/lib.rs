@@ -54,26 +54,26 @@ impl World {
 
     pub fn update(&mut self) {
         let snake_idx = self.snake_head_idx();
-        let row = snake_idx / self.size;
-        let col = snake_idx % self.size;
+        let (row, col) = self.idx_to_cell(snake_idx);
+        let (row, col) = match self.snake.direction {
+            Direction::Up => ((row - 1) % self.size, col),
+            Direction::Down => ((row + 1) % self.size, col),
+            Direction::Right => (row, (snake_idx + 1) % self.size),
+            Direction::Left => (row, (snake_idx - 1) % self.size),
+        };
 
-        match self.snake.direction {
-            Direction::Up => {
-                let next_row = (row - 1) % self.size;
-                self.snake.body[0].0 = (next_row * self.size) + col;
-            }
-            Direction::Down => {
-                let next_row = (row + 1) % self.size;
-                self.snake.body[0].0 = (next_row * self.size) + col;
-            }
-            Direction::Right => {
-                let next_col = (snake_idx + 1) % self.size;
-                self.snake.body[0].0 = (row * self.size) + next_col;
-            }
-            Direction::Left => {
-                let next_col = (snake_idx - 1) % self.size;
-                self.snake.body[0].0 = (row * self.size) + next_col;
-            }
-        }
+        self.set_snake_head(self.cell_to_idx(row, col));
+    }
+
+    fn set_snake_head(&mut self, idx: usize) {
+        self.snake.body[0].0 = idx;
+    }
+
+    fn idx_to_cell(&self, idx: usize) -> (usize, usize) {
+        (idx / self.size, idx % self.size)
+    }
+
+    fn cell_to_idx(&self, row: usize, col: usize) -> usize {
+        (row * self.size) + col
     }
 }
