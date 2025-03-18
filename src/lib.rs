@@ -28,7 +28,7 @@ impl World {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Self {
-            size: 16,
+            size: 8,
             snake: Snake::new(10),
         }
     }

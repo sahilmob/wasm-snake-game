@@ -28,6 +28,17 @@ function drawWorld() {
   ctx?.stroke();
 }
 
-console.log(world.snakeHeadIdx);
+function drawSnake() {
+  const snakeIdx = world.snakeHeadIdx;
+  const col = snakeIdx % worldSize;
+  const row = Math.floor(snakeIdx / worldSize);
+
+  ctx?.beginPath();
+
+  ctx?.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+
+  ctx?.stroke();
+}
 
 drawWorld();
+drawSnake();
