@@ -40,5 +40,18 @@ function drawSnake() {
   ctx?.stroke();
 }
 
-drawWorld();
-drawSnake();
+function drawGame() {
+  ctx?.clearRect(0, 0, canvas.width, canvas.height);
+  world.update();
+  drawWorld();
+  drawSnake();
+}
+
+function play() {
+  setTimeout(() => {
+    drawGame();
+    requestAnimationFrame(play);
+  }, 100);
+}
+
+play();
