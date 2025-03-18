@@ -1,4 +1,4 @@
-import init, { World } from "snake_game";
+import init, { World, Direction } from "snake_game";
 
 import "./style.css";
 
@@ -55,5 +55,22 @@ function play() {
     requestAnimationFrame(play);
   }, 1000 / FPS);
 }
+
+document.addEventListener("keydown", (e) => {
+  switch (e.code) {
+    case "ArrowUp":
+      world.direction = Direction.Up;
+      break;
+    case "ArrowRight":
+      world.direction = Direction.Right;
+      break;
+    case "ArrowDown":
+      world.direction = Direction.Down;
+      break;
+    case "ArrowLeft":
+      world.direction = Direction.Left;
+      break;
+  }
+});
 
 play();

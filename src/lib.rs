@@ -10,7 +10,9 @@ struct Snake {
     direction: Direction,
 }
 
-enum Direction {
+#[wasm_bindgen]
+
+pub enum Direction {
     Up,
     Down,
     Right,
@@ -50,6 +52,11 @@ impl World {
     #[wasm_bindgen(getter = "snakeHeadIdx")]
     pub fn snake_head_idx(&self) -> usize {
         self.snake.body[0].0
+    }
+
+    #[wasm_bindgen(setter = "direction")]
+    pub fn set_snake_dir(&mut self, direction: Direction) {
+        self.snake.direction = direction;
     }
 
     pub fn update(&mut self) {
