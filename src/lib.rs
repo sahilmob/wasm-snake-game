@@ -60,8 +60,18 @@ impl World {
         size: usize,
         #[wasm_bindgen(js_name = "snakeSpawnIdx")] snake_spawn_idx: usize,
     ) -> Self {
-        let mut reward_cell;
         let snake = Snake::new(snake_spawn_idx, 3);
+        let reward_cell = World::generate_reward_cell(&snake, size);
+        Self {
+            size,
+            snake,
+            reward_cell,
+            next_cell: None,
+        }
+    }
+
+    fn generate_reward_cell(snake: &Snake, size: usize) -> usize {
+        let mut reward_cell;
 
         loop {
             reward_cell = random_num(size.pow(2));
@@ -71,12 +81,7 @@ impl World {
             }
         }
 
-        Self {
-            size,
-            snake,
-            reward_cell,
-            next_cell: None,
-        }
+        reward_cell
     }
 
     #[wasm_bindgen(getter = "rewardCell")]
@@ -120,6 +125,12 @@ impl World {
 
         for i in 1..self.snake.body.len() {
             self.snake.body[i] = SnakeCell(temp[i - 1].0);
+        }
+
+        if self.reward_cell == self.snake_head_idx() {
+            self.snake.body.push(SnakeCell(self.snake.body[1].0));
+            let reward_cell = World::generate_reward_cell(&self.snake, self.size);
+            self.reward_cell = reward_cell;
         }
     }
 
