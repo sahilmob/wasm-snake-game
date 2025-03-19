@@ -9,3 +9,4 @@ wee_alloc = "0.4.5"
 
 [lib]
 crate-type = ["cdylib"]
+

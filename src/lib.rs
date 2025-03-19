@@ -1,9 +1,17 @@
-use std::vec;
+use std::{usize, vec};
 
 use wasm_bindgen::prelude::*;
 
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = Math)]
+    fn random() -> f32;
+    #[wasm_bindgen(js_namespace = Math)]
+    fn floor(num: f32) -> usize;
+}
 
 #[derive(Clone)]
 pub struct SnakeCell(usize);
@@ -27,6 +35,7 @@ pub struct World {
     size: usize,
     snake: Snake,
     next_cell: Option<SnakeCell>,
+    reward_cell: usize,
 }
 
 impl Snake {
@@ -51,11 +60,19 @@ impl World {
         size: usize,
         #[wasm_bindgen(js_name = "snakeSpawnIdx")] snake_spawn_idx: usize,
     ) -> Self {
+        let reward_cell = random_num(size.pow(2));
+
         Self {
             size,
+            reward_cell,
             next_cell: None,
             snake: Snake::new(snake_spawn_idx, 3),
         }
+    }
+
+    #[wasm_bindgen(getter = "rewardCell")]
+    pub fn reward_cell(&self) -> usize {
+        self.reward_cell
     }
 
     #[wasm_bindgen(getter)]
@@ -148,4 +165,8 @@ impl World {
     pub fn snake_cells_ptr(&self) -> *const SnakeCell {
         self.snake.body.as_ptr()
     }
+}
+
+fn random_num(max: usize) -> usize {
+    floor(random() * max as f32)
 }

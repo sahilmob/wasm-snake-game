@@ -54,11 +54,23 @@ function drawSnake() {
   ctx?.stroke();
 }
 
+function drawRewardCell() {
+  const rewardCell = world.rewardCell;
+  const col = rewardCell % WORLD_SIZE;
+  const row = Math.floor(rewardCell / WORLD_SIZE);
+  ctx?.beginPath();
+  ctx!.fillStyle = "#ff0000";
+  ctx?.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+
+  ctx?.stroke();
+}
+
 function drawGame() {
   ctx?.clearRect(0, 0, canvas.width, canvas.height);
   world.step();
   drawWorld();
   drawSnake();
+  drawRewardCell();
 }
 
 function play() {
