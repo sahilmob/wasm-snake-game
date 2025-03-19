@@ -26,6 +26,7 @@ pub enum Direction {
 pub struct World {
     size: usize,
     snake: Snake,
+    next_cell: Option<SnakeCell>,
 }
 
 impl Snake {
@@ -52,6 +53,7 @@ impl World {
     ) -> Self {
         Self {
             size,
+            next_cell: None,
             snake: Snake::new(snake_spawn_idx, 3),
         }
     }
@@ -74,18 +76,23 @@ impl World {
             return;
         }
 
+        self.next_cell = Some(next_cell);
         self.snake.direction = direction;
     }
 
     #[wasm_bindgen]
     pub fn step(&mut self) {
         let temp = self.snake.body.clone();
-        let next_cell = self.generate_next_snake_cell(&self.snake.direction);
-        self.snake.body[0] = next_cell;
+        self.snake.body[0] = match &self.next_cell {
+            Some(cell) => {
+                let cell = cell.clone();
+                self.next_cell = None;
+                cell
+            }
+            None => self.generate_next_snake_cell(&self.snake.direction),
+        };
 
-        let len = self.snake.body.len();
-
-        for i in 1..len {
+        for i in 1..self.snake.body.len() {
             self.snake.body[i] = SnakeCell(temp[i - 1].0);
         }
     }
