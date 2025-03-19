@@ -13,7 +13,7 @@ extern "C" {
     fn floor(num: f32) -> usize;
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct SnakeCell(usize);
 
 struct Snake {
@@ -60,13 +60,22 @@ impl World {
         size: usize,
         #[wasm_bindgen(js_name = "snakeSpawnIdx")] snake_spawn_idx: usize,
     ) -> Self {
-        let reward_cell = random_num(size.pow(2));
+        let mut reward_cell;
+        let snake = Snake::new(snake_spawn_idx, 3);
+
+        loop {
+            reward_cell = random_num(size.pow(2));
+
+            if !snake.body.contains(&SnakeCell(reward_cell)) {
+                break;
+            }
+        }
 
         Self {
             size,
+            snake,
             reward_cell,
             next_cell: None,
-            snake: Snake::new(snake_spawn_idx, 3),
         }
     }
 
