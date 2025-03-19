@@ -5,6 +5,7 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+#[derive(Clone)]
 pub struct SnakeCell(usize);
 
 struct Snake {
@@ -67,20 +68,33 @@ impl World {
 
     #[wasm_bindgen(setter = "direction")]
     pub fn set_snake_dir(&mut self, direction: Direction) {
+        let next_cell = self.generate_next_snake_cell(&direction);
+
+        if self.snake.body[1].0 == next_cell.0 {
+            return;
+        }
+
         self.snake.direction = direction;
     }
 
     #[wasm_bindgen]
     pub fn step(&mut self) {
-        let next_cell = self.generate_next_snake_cell();
+        let temp = self.snake.body.clone();
+        let next_cell = self.generate_next_snake_cell(&self.snake.direction);
         self.snake.body[0] = next_cell;
+
+        let len = self.snake.body.len();
+
+        for i in 1..len {
+            self.snake.body[i] = SnakeCell(temp[i - 1].0);
+        }
     }
 
-    fn generate_next_snake_cell(&self) -> SnakeCell {
+    fn generate_next_snake_cell(&self, direction: &Direction) -> SnakeCell {
         let snake_idx = self.snake_head_idx();
         let row = snake_idx / self.size;
 
-        return match self.snake.direction {
+        return match direction {
             Direction::Right => {
                 let threshold = (row + 1) * self.size;
                 if snake_idx + 1 == threshold {
