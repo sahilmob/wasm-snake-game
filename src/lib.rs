@@ -61,11 +61,11 @@ impl World {
         #[wasm_bindgen(js_name = "snakeSpawnIdx")] snake_spawn_idx: usize,
     ) -> Self {
         let snake = Snake::new(snake_spawn_idx, 3);
-        let reward_cell = World::generate_reward_cell(&snake, size);
+
         Self {
             size,
+            reward_cell: World::generate_reward_cell(&snake, size),
             snake,
-            reward_cell,
             next_cell: None,
         }
     }
@@ -129,8 +129,9 @@ impl World {
 
         if self.reward_cell == self.snake_head_idx() {
             self.snake.body.push(SnakeCell(self.snake.body[1].0));
-            let reward_cell = World::generate_reward_cell(&self.snake, self.size);
-            self.reward_cell = reward_cell;
+            if self.snake_length() < self.size.pow(2) {
+                self.reward_cell = World::generate_reward_cell(&self.snake, self.size);
+            }
         }
     }
 
